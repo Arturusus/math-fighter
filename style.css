@@ -4,44 +4,45 @@
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    background: radial-gradient(circle at top, #2e1a47, #130b24);
+    background: radial-gradient(circle at top, #241338, #0e0718);
     color: #fff;
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 15px;
+    padding: 10px;
 }
 
 .game-wrapper {
     width: 100%;
-    max-width: 820px;
-    background: rgba(255, 255, 255, 0.06);
+    max-width: 780px;
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(12px);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.14);
     border-radius: 24px;
-    padding: 24px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    padding: 18px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
 }
 
+/* Верхняя панель */
 .top-bar {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 18px;
+    gap: 8px;
+    margin-bottom: 12px;
 }
 
 .stat-badge {
-    background: rgba(0, 0, 0, 0.4);
-    padding: 10px 20px;
-    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.45);
+    padding: 8px 14px;
+    border-radius: 12px;
     font-weight: 700;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
@@ -49,152 +50,140 @@ body {
     color: #ff9f43;
 }
 
-.settings-panel {
-    background: rgba(0, 0, 0, 0.25);
-    padding: 12px 16px;
-    border-radius: 16px;
-    margin-bottom: 20px;
-    text-align: center;
+.sound-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-radius: 12px;
+    padding: 7px 12px;
+    font-size: 1.1rem;
+    cursor: pointer;
 }
 
-.settings-title {
-    display: block;
-    font-size: 0.9rem;
-    color: #c8d6e5;
-    margin-bottom: 10px;
+/* Панель выбора чисел */
+.settings-panel {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 14px;
+    margin-bottom: 14px;
 }
 
 .num-toggles {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
 }
 
 .num-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
     border: 2px solid #5f27cd;
     background: rgba(95, 39, 205, 0.2);
     color: #fff;
     font-weight: bold;
-    font-size: 1.05rem;
+    font-size: 1rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.15s;
 }
 
 .num-btn.active {
     background: #1dd1a1;
     border-color: #10ac84;
     color: #130b24;
-    box-shadow: 0 0 12px rgba(29, 209, 161, 0.5);
+    box-shadow: 0 0 10px rgba(29, 209, 161, 0.5);
 }
 
-/* Кнопка режима Контроль */
 .control-btn {
-    height: 40px;
-    padding: 0 16px;
-    border-radius: 10px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 9px;
     border: 2px solid #feca57;
     background: rgba(254, 202, 87, 0.15);
     color: #feca57;
     font-weight: 800;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.2s;
-    margin-left: 6px;
-}
-
-.control-btn:hover {
-    background: rgba(254, 202, 87, 0.3);
 }
 
 .control-btn.active {
     background: linear-gradient(135deg, #feca57, #ff9f43);
     border-color: #fff;
     color: #130b24;
-    box-shadow: 0 0 16px rgba(254, 202, 87, 0.8);
+    box-shadow: 0 0 14px rgba(254, 202, 87, 0.8);
 }
 
-.arena {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    background: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.45));
-    padding: 25px 15px;
+/* БОЕВАЯ АРЕНА */
+.battle-stage {
+    background: linear-gradient(180deg, #1b1138 0%, #2d174a 65%, #190e29 65%, #12091d 100%);
     border-radius: 20px;
-    margin-bottom: 20px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.12);
     position: relative;
-    border: 2px solid transparent;
-    transition: border-color 0.3s;
+    overflow: hidden;
 }
 
-.arena.control-mode-arena {
-    border-color: rgba(254, 202, 87, 0.6);
-    background: linear-gradient(180deg, rgba(70, 50, 10, 0.35), rgba(0, 0, 0, 0.55));
+.battle-stage.control-mode-arena {
+    border-color: #feca57;
+    background: linear-gradient(180deg, #3a250a 0%, #4f320d 65%, #261705 65%, #170d02 100%);
 }
 
-.fighter-card {
-    text-align: center;
-    width: 42%;
+/* Полоски здоровья как в файтинге */
+.hud-bars {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    z-index: 5;
     position: relative;
 }
 
-.avatar {
-    font-size: 4.8rem;
-    line-height: 1.1;
-    margin-bottom: 8px;
-    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.4));
+.hud-side {
+    width: 43%;
+}
+
+.monster-side {
+    text-align: right;
 }
 
 .fighter-name-row {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     cursor: pointer;
-    margin-bottom: 10px;
-    padding: 2px 8px;
-    border-radius: 8px;
-    transition: background 0.2s;
-}
-
-.fighter-name-row:hover {
-    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 5px;
 }
 
 .fighter-name {
-    font-weight: bold;
-    font-size: 1.15rem;
+    font-weight: 800;
+    font-size: 1rem;
     color: #feca57;
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .fighter-name-row .fighter-name {
     margin-bottom: 0;
 }
 
-.edit-icon {
-    font-size: 0.9rem;
-    opacity: 0.75;
-}
-
 .hp-bar-bg {
     width: 100%;
-    height: 18px;
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: 10px;
+    height: 16px;
+    background: rgba(0, 0, 0, 0.65);
+    border-radius: 8px;
     overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    margin-bottom: 6px;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    margin-bottom: 4px;
 }
 
 .hp-bar-fill {
     height: 100%;
     width: 100%;
-    transition: width 0.35s ease-out;
+    transition: width 0.3s ease-out;
 }
 
 .hero-hp {
@@ -206,95 +195,218 @@ body {
 }
 
 .hp-label {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #dfe6e9;
+    font-weight: 600;
 }
 
-.vs-divider {
-    font-size: 1.4rem;
+.vs-badge {
+    background: #ff4757;
+    color: #fff;
     font-weight: 900;
-    color: #ff9f43;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    margin-top: 14px;
+    box-shadow: 0 0 12px rgba(255, 71, 87, 0.6);
 }
 
+/* Пол сцены и персонажи */
+.stage-floor {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 170px;
+    padding: 0 25px;
+    position: relative;
+}
+
+.character-wrap {
+    width: 135px;
+    height: 150px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.char-svg {
+    width: 130px;
+    height: 145px;
+    overflow: visible;
+    filter: drop-shadow(0 8px 10px rgba(0,0,0,0.5));
+}
+
+/* Плавное дыхание персонажей */
+.hero-sprite, .monster-sprite {
+    animation: idleFloat 2.2s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+
+.monster-sprite {
+    animation-delay: 0.5s;
+}
+
+@keyframes idleFloat {
+    0%, 100% { transform: translateY(0) scaleY(1); }
+    50% { transform: translateY(-5px) scaleY(1.03); }
+}
+
+/* АНИМАЦИЯ РЫВКА И УДАРА ГЕРОЯ */
+.hero-attack-run {
+    animation: heroDash 0.55s ease-in-out !important;
+    z-index: 20;
+}
+
+@keyframes heroDash {
+    0% { transform: translateX(0) scale(1); }
+    35% { transform: translateX(190px) translateY(-18px) rotate(8deg) scale(1.15); }
+    55% { transform: translateX(180px) translateY(0) scale(1.1); }
+    100% { transform: translateX(0) scale(1); }
+}
+
+/* АНИМАЦИЯ АТАКИ МОНСТРА (при ошибке) */
+.monster-attack-run {
+    animation: monsterDash 0.55s ease-in-out !important;
+    z-index: 20;
+}
+
+@keyframes monsterDash {
+    0% { transform: translateX(0) scale(1); }
+    40% { transform: translateX(-190px) scale(1.2) rotate(-10deg); }
+    100% { transform: translateX(0) scale(1); }
+}
+
+/* АНИМАЦИЯ ПОЛУЧЕНИЯ ЛЕЩА МОНСТРОМ (сплющивание и отлет) */
+.monster-slapped {
+    animation: slappedImpact 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97) !important;
+}
+
+@keyframes slappedImpact {
+    0% { transform: scale(1); filter: brightness(1); }
+    20% { transform: translateX(35px) rotate(18deg) scaleX(0.72) scaleY(1.22); filter: brightness(2) drop-shadow(0 0 15px #ff4757); }
+    45% { transform: translateX(-15px) rotate(-10deg) scaleX(1.15) scaleY(0.88); }
+    70% { transform: translateX(10px) rotate(6deg); }
+    100% { transform: translateX(0) rotate(0) scale(1); }
+}
+
+/* Рука-ЛЕЩ, которая влетает в босса */
+.slap-hand {
+    position: absolute;
+    top: 25px;
+    left: -30px;
+    font-size: 4.2rem;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 30;
+}
+
+.slap-hand.active {
+    animation: slapFly 0.5s ease-out;
+}
+
+@keyframes slapFly {
+    0% { opacity: 0; transform: translate(-70px, -30px) scale(0.4) rotate(-45deg); }
+    35% { opacity: 1; transform: translate(25px, 10px) scale(1.35) rotate(15deg); }
+    65% { opacity: 1; transform: translate(30px, 12px) scale(1.1) rotate(20deg); }
+    100% { opacity: 0; transform: translate(45px, 20px) scale(0.8) rotate(35deg); }
+}
+
+.slap-sparks {
+    position: absolute;
+    top: 15px;
+    left: 25px;
+    font-size: 4rem;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 29;
+}
+
+.slap-sparks.active {
+    animation: sparkBoom 0.45s ease-out;
+}
+
+@keyframes sparkBoom {
+    0% { opacity: 0; transform: scale(0.3); }
+    40% { opacity: 1; transform: scale(1.4) rotate(20deg); }
+    100% { opacity: 0; transform: scale(1.8); }
+}
+
+/* Всплывающий текст ЛЕЩА */
 .damage-popup {
     position: absolute;
-    top: -15px;
+    top: -18px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 1.5rem;
+    font-size: 1.45rem;
     font-weight: 900;
-    color: #ff4757;
-    text-shadow: 0 2px 8px #000;
+    color: #feca57;
+    background: #ff4757;
+    padding: 3px 10px;
+    border-radius: 10px;
+    border: 2px solid #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     opacity: 0;
     pointer-events: none;
     white-space: nowrap;
+    z-index: 35;
 }
 
 .damage-popup.show {
-    animation: floatUp 0.8s ease-out;
+    animation: floatUp 0.85s ease-out;
 }
 
 @keyframes floatUp {
-    0% { opacity: 1; transform: translate(-50%, 0) scale(0.8); }
-    50% { transform: translate(-50%, -25px) scale(1.15); }
-    100% { opacity: 0; transform: translate(-50%, -45px) scale(1); }
+    0% { opacity: 1; transform: translate(-50%, 10px) scale(0.5) rotate(-8deg); }
+    35% { opacity: 1; transform: translate(-50%, -22px) scale(1.15) rotate(4deg); }
+    100% { opacity: 0; transform: translate(-50%, -48px) scale(0.95); }
 }
 
-.shake {
-    animation: shakeAnim 0.4s;
-}
-
-@keyframes shakeAnim {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-12px) rotate(-4deg); }
-    50% { transform: translateX(12px) rotate(4deg); }
-    75% { transform: translateX(-8px); }
-}
-
+/* Зона вопроса */
 .spell-zone {
     text-align: center;
 }
 
 .battle-log {
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: #48dbfb;
-    min-height: 24px;
-    margin-bottom: 10px;
+    min-height: 22px;
+    margin-bottom: 8px;
     font-weight: 600;
 }
 
 .question-box {
-    font-size: 3rem;
+    font-size: 2.6rem;
     font-weight: 900;
     background: rgba(255, 255, 255, 0.08);
     display: inline-block;
-    padding: 12px 40px;
-    border-radius: 20px;
-    margin-bottom: 18px;
+    padding: 8px 32px;
+    border-radius: 18px;
+    margin-bottom: 14px;
     border: 2px solid rgba(255, 255, 255, 0.2);
-    letter-spacing: 2px;
 }
 
 .visual-hint {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.55);
     border: 2px dashed #feca57;
-    border-radius: 16px;
-    padding: 14px;
-    margin: 0 auto 18px auto;
-    max-width: 450px;
+    border-radius: 14px;
+    padding: 10px;
+    margin: 0 auto 14px auto;
+    max-width: 420px;
+    font-size: 0.9rem;
 }
 
 .hint-grid {
     display: inline-grid;
-    gap: 5px;
-    margin-top: 10px;
+    gap: 4px;
+    margin-top: 8px;
 }
 
 .hint-dot {
-    width: 15px;
-    height: 15px;
+    width: 13px;
+    height: 13px;
     background: #feca57;
-    border-radius: 4px;
+    border-radius: 3px;
 }
 
 .hidden {
@@ -304,8 +416,8 @@ body {
 .answers-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-    max-width: 500px;
+    gap: 12px;
+    max-width: 480px;
     margin: 0 auto;
 }
 
@@ -313,17 +425,16 @@ body {
     background: linear-gradient(135deg, #5f27cd, #341f97);
     color: #fff;
     border: 2px solid rgba(255, 255, 255, 0.25);
-    padding: 18px;
-    font-size: 1.8rem;
+    padding: 15px;
+    font-size: 1.7rem;
     font-weight: bold;
     border-radius: 16px;
     cursor: pointer;
-    transition: transform 0.12s, background 0.2s;
+    transition: transform 0.1s, background 0.15s;
 }
 
-.ans-btn:hover {
-    transform: translateY(-3px);
-    background: linear-gradient(135deg, #7d5fff, #5f27cd);
+.ans-btn:active {
+    transform: scale(0.95);
 }
 
 .ans-btn.correct {
@@ -335,4 +446,21 @@ body {
 .ans-btn.wrong {
     background: #ff4757 !important;
     opacity: 0.7;
+}
+
+@media (max-width: 520px) {
+    .stage-floor {
+        padding: 0 5px;
+        height: 150px;
+    }
+    @keyframes heroDash {
+        0% { transform: translateX(0); }
+        40% { transform: translateX(115px) translateY(-12px) scale(1.1); }
+        100% { transform: translateX(0); }
+    }
+    @keyframes monsterDash {
+        0% { transform: translateX(0); }
+        40% { transform: translateX(-115px) scale(1.15); }
+        100% { transform: translateX(0); }
+    }
 }

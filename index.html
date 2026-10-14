@@ -2,58 +2,98 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Магическая Академия: Битва Чисел</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Битва Чисел: Раздай Лещей!</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
     <div class="game-wrapper">
-        <!-- Верхняя панель статов -->
+        <!-- Верхняя панель -->
         <header class="top-bar">
-            <div class="stat-badge">⭐ Уровень: <span id="player-lvl">1</span></div>
-            <div class="stat-badge">💎 Кристаллы: <span id="crystals">0</span></div>
-            <div class="stat-badge combo-badge" id="combo-box">🔥 Серия: <span id="combo">0</span></div>
+            <div class="stat-badge">⭐ Ур: <span id="player-lvl">1</span></div>
+            <div class="stat-badge">💎 <span id="crystals">0</span></div>
+            <div class="stat-badge combo-badge">🔥 Комбо: <span id="combo">0</span></div>
+            <button class="sound-btn" id="sound-toggle" title="Вкл/Выкл звук">🔊</button>
         </header>
 
-        <!-- Выбор таблиц и кнопка Контроль -->
+        <!-- Выбор таблиц и Контроль -->
         <section class="settings-panel">
-            <span class="settings-title" id="mode-subtitle">Выбери числа для тренировки или испытай себя в Контроле:</span>
             <div class="num-toggles" id="num-toggles"></div>
         </section>
 
-        <!-- Боевая арена -->
-        <main class="arena" id="arena-box">
-            <!-- Карточка Игрока -->
-            <div class="fighter-card" id="hero-card">
-                <div class="avatar" id="hero-avatar">🧙‍♀️</div>
-                <div class="fighter-name-row" id="edit-name-trigger" title="Нажми, чтобы изменить имя">
-                    <span class="fighter-name" id="hero-name">Хранительница</span>
-                    <span class="edit-icon">✏️</span>
+        <!-- БОЕВАЯ СЦЕНА (2D Файтинг) -->
+        <main class="battle-stage" id="arena-box">
+            <!-- Полоски здоровья сверху как в файтингах -->
+            <div class="hud-bars">
+                <div class="hud-side hero-side">
+                    <div class="fighter-name-row" id="edit-name-trigger" title="Изменить имя">
+                        <span class="fighter-name" id="hero-name">Героиня</span>
+                        <span class="edit-icon">✏️</span>
+                    </div>
+                    <div class="hp-bar-bg">
+                        <div class="hp-bar-fill hero-hp" id="hero-hp-bar"></div>
+                    </div>
+                    <div class="hp-label">❤️ <span id="hero-hp-text">100/100</span></div>
                 </div>
-                <div class="hp-bar-bg">
-                    <div class="hp-bar-fill hero-hp" id="hero-hp-bar"></div>
+
+                <div class="vs-badge">VS</div>
+
+                <div class="hud-side monster-side">
+                    <div class="fighter-name" id="monster-name">Зубастый Слайм</div>
+                    <div class="hp-bar-bg">
+                        <div class="hp-bar-fill monster-hp" id="monster-hp-bar"></div>
+                    </div>
+                    <div class="hp-label">👾 <span id="monster-hp-text">50/50</span></div>
                 </div>
-                <div class="hp-label">❤️ <span id="hero-hp-text">100/100</span></div>
             </div>
 
-            <div class="vs-divider">⚡ VS ⚡</div>
-
-            <!-- Карточка Босса -->
-            <div class="fighter-card" id="monster-card">
-                <div class="damage-popup" id="dmg-popup"></div>
-                <div class="avatar" id="monster-avatar">🦊</div>
-                <div class="fighter-name" id="monster-name">Хитрый Лис Пересчет</div>
-                <div class="hp-bar-bg">
-                    <div class="hp-bar-fill monster-hp" id="monster-hp-bar"></div>
+            <!-- Персонажи на арене -->
+            <div class="stage-floor">
+                <!-- Герой слева -->
+                <div class="character-wrap hero-wrap" id="hero-wrap">
+                    <div class="hero-sprite" id="hero-sprite">
+                        <!-- Векторный боевой персонаж -->
+                        <svg viewBox="0 0 120 140" class="char-svg">
+                            <ellipse cx="60" cy="130" rx="35" ry="8" fill="rgba(0,0,0,0.4)"/>
+                            <!-- Плащ -->
+                            <path d="M35 65 L15 120 L55 115 Z" fill="#ff4757"/>
+                            <!-- Тело -->
+                            <rect x="40" y="65" width="40" height="50" rx="14" fill="#5f27cd"/>
+                            <rect x="48" y="75" width="24" height="30" rx="6" fill="#feca57"/>
+                            <!-- Голова -->
+                            <circle cx="60" cy="42" r="26" fill="#ffdbac"/>
+                            <!-- Волосы / Капюшон -->
+                            <path d="M32 42 C32 15, 88 15, 88 42 C88 28, 75 22, 60 22 C45 22, 32 28, 32 42 Z" fill="#2f3542"/>
+                            <!-- Боевая повязка -->
+                            <rect x="34" y="26" width="52" height="8" rx="4" fill="#ff4757"/>
+                            <!-- Глаза -->
+                            <circle cx="52" cy="42" r="4" fill="#1e272e"/>
+                            <circle cx="70" cy="42" r="4" fill="#1e272e"/>
+                            <path d="M46 34 L56 38" stroke="#1e272e" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M76 34 L66 38" stroke="#1e272e" stroke-width="3" stroke-linecap="round"/>
+                            <!-- Улыбка -->
+                            <path d="M54 52 Q61 58 68 52" stroke="#1e272e" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        </svg>
+                    </div>
                 </div>
-                <div class="hp-label">👾 <span id="monster-hp-text">50/50</span></div>
+
+                <!-- Монстр справа -->
+                <div class="character-wrap monster-wrap" id="monster-wrap">
+                    <!-- Эффект прилетающего ЛЕЩА -->
+                    <div class="slap-hand" id="slap-hand">👋</div>
+                    <div class="slap-sparks" id="slap-sparks">💥</div>
+                    <div class="damage-popup" id="dmg-popup"></div>
+
+                    <!-- Контейнер для живого SVG монстра -->
+                    <div class="monster-sprite" id="monster-sprite"></div>
+                </div>
             </div>
         </main>
 
         <!-- Зона вопроса -->
         <section class="spell-zone">
-            <div class="battle-log" id="battle-log">Выбери правильный ответ, чтобы нанести удар!</div>
+            <div class="battle-log" id="battle-log">Реши пример, чтобы отвесить боссу сочного леща!</div>
             <div class="question-box" id="question-box">6 × 7 = ?</div>
             <div id="visual-hint" class="visual-hint hidden"></div>
             <div class="answers-grid" id="answers-grid"></div>
