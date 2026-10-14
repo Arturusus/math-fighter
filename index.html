@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магическая Академия: Битва Чисел</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div class="game-wrapper">
+        <!-- Верхняя панель статов -->
+        <header class="top-bar">
+            <div class="stat-badge">⭐ Уровень: <span id="player-lvl">1</span></div>
+            <div class="stat-badge">💎 Кристаллы: <span id="crystals">0</span></div>
+            <div class="stat-badge combo-badge" id="combo-box">🔥 Серия: <span id="combo">0</span></div>
+        </header>
+
+        <!-- Выбор таблиц и кнопка Контроль -->
+        <section class="settings-panel">
+            <span class="settings-title" id="mode-subtitle">Выбери числа для тренировки или испытай себя в Контроле:</span>
+            <div class="num-toggles" id="num-toggles"></div>
+        </section>
+
+        <!-- Боевая арена -->
+        <main class="arena" id="arena-box">
+            <!-- Карточка Игрока -->
+            <div class="fighter-card" id="hero-card">
+                <div class="avatar" id="hero-avatar">🧙‍♀️</div>
+                <div class="fighter-name-row" id="edit-name-trigger" title="Нажми, чтобы изменить имя">
+                    <span class="fighter-name" id="hero-name">Хранительница</span>
+                    <span class="edit-icon">✏️</span>
+                </div>
+                <div class="hp-bar-bg">
+                    <div class="hp-bar-fill hero-hp" id="hero-hp-bar"></div>
+                </div>
+                <div class="hp-label">❤️ <span id="hero-hp-text">100/100</span></div>
+            </div>
+
+            <div class="vs-divider">⚡ VS ⚡</div>
+
+            <!-- Карточка Босса -->
+            <div class="fighter-card" id="monster-card">
+                <div class="damage-popup" id="dmg-popup"></div>
+                <div class="avatar" id="monster-avatar">🦊</div>
+                <div class="fighter-name" id="monster-name">Хитрый Лис Пересчет</div>
+                <div class="hp-bar-bg">
+                    <div class="hp-bar-fill monster-hp" id="monster-hp-bar"></div>
+                </div>
+                <div class="hp-label">👾 <span id="monster-hp-text">50/50</span></div>
+            </div>
+        </main>
+
+        <!-- Зона вопроса -->
+        <section class="spell-zone">
+            <div class="battle-log" id="battle-log">Выбери правильный ответ, чтобы нанести удар!</div>
+            <div class="question-box" id="question-box">6 × 7 = ?</div>
+            <div id="visual-hint" class="visual-hint hidden"></div>
+            <div class="answers-grid" id="answers-grid"></div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
