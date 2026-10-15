@@ -1,4 +1,16 @@
-// Генератор реальных звуков удара ("леща") через Web Audio API (без сторонних mp3)
+// =========================================================================
+// НАСТРОЙКИ БАЗЫ ДАННЫХ И АДМИНКИ
+// =========================================================================
+// Пин-код для входа в панель 👑 (посмотреть все телефоны и прогресс):
+const ADMIN_PIN = "1234";
+
+// (Опционально) Если хочешь, чтобы база синхронизировалась между её телефоном и твоим ПК через интернет,
+// вставь сюда ссылку на бесплатную Firebase Realtime Database (например: "https://my-game-default-rtdb.firebaseio.com")
+const CLOUD_DB_URL = "";
+
+// =========================================================================
+// ЗВУКОВОЙ ДВИЖОК (Web Audio API)
+// =========================================================================
 let soundEnabled = true;
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
@@ -11,7 +23,6 @@ function playSound(type) {
     const now = audioCtx.currentTime;
 
     if (type === "slap" || type === "crit") {
-        // 1. Хлесткий хлопок ладонью (белый шум с фильтром)
         const bufferSize = audioCtx.sampleRate * 0.14;
         const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
         const output = noiseBuffer.getChannelData(0);
@@ -34,7 +45,6 @@ function playSound(type) {
         gainNode.connect(audioCtx.destination);
         whiteNoise.start(now);
 
-        // 2. Басовый панч при ударе
         const osc = audioCtx.createOscillator();
         const oscGain = audioCtx.createGain();
         osc.type = "triangle";
@@ -49,7 +59,6 @@ function playSound(type) {
         osc.start(now);
         osc.stop(now + 0.18);
     } else if (type === "wrong") {
-        // Звук промаха / укуса монстра
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = "sawtooth";
@@ -64,7 +73,9 @@ function playSound(type) {
     }
 }
 
-// Боссы с кастомным внешним видом (SVG-параметры)
+// =========================================================================
+// БОССЫ И ИХ ВНЕШНИЙ ВИД
+// =========================================================================
 const MONSTERS = [
     { name: "Зубастый Слайм", maxHp: 50, color: "#2ed573", secondary: "#7bed9f", horns: false, eyes: 2 },
     { name: "Восьминог Путаник", maxHp: 65, color: "#ff4757", secondary: "#ff7f50", horns: true, eyes: 3 },
@@ -82,7 +93,6 @@ const CONTROL_BOSS = {
     isStar: true
 };
 
-// Отрисовка живого SVG монстра (обычное лицо или лицо в момент получения леща!)
 function generateMonsterSVG(m, isHurt = false) {
     if (m.isStar) {
         return `
@@ -90,7 +100,6 @@ function generateMonsterSVG(m, isHurt = false) {
             <ellipse cx="65" cy="132" rx="38" ry="8" fill="rgba(0,0,0,0.4)"/>
             <polygon points="65,10 82,48 122,52 90,80 100,120 65,98 30,120 40,80 8,52 48,48" fill="${m.color}" stroke="#fff" stroke-width="3"/>
             ${isHurt ? `
-                <!-- Лицо при получении леща (X_X) -->
                 <path d="M44 52 L56 64 M56 52 L44 64" stroke="#130b24" stroke-width="4" stroke-linecap="round"/>
                 <path d="M74 52 L86 64 M86 52 L74 64" stroke="#130b24" stroke-width="4" stroke-linecap="round"/>
                 <circle cx="65" cy="80" r="8" fill="#130b24"/>
@@ -109,11 +118,9 @@ function generateMonsterSVG(m, isHurt = false) {
 
     let eyesHtml = "";
     if (isHurt) {
-        // Глаза крестиками от сочного леща!
         eyesHtml = `
             <path d="M38 50 L54 66 M54 50 L38 66" stroke="#1e272e" stroke-width="5" stroke-linecap="round"/>
             <path d="M76 50 L92 66 M92 50 L76 66" stroke="#1e272e" stroke-width="5" stroke-linecap="round"/>
-            <!-- Синяк / румянец от леща -->
             <ellipse cx="35" cy="74" rx="10" ry="6" fill="#ff4757" opacity="0.85"/>
         `;
     } else if (m.eyes === 1) {
@@ -138,11 +145,9 @@ function generateMonsterSVG(m, isHurt = false) {
     }
 
     const mouthHtml = isHurt ? `
-        <!-- Перекошенный от леща рот и вылетающий зуб -->
         <ellipse cx="70" cy="92" rx="14" ry="11" fill="#1e272e"/>
         <rect x="64" y="81" width="7" height="7" fill="#fff" transform="rotate(15 64 81)"/>
     ` : `
-        <!-- Зубастая пасть -->
         <path d="M40 86 Q65 106 90 86 Z" fill="#1e272e"/>
         <polygon points="48,88 53,96 58,88" fill="#fff"/>
         <polygon points="72,88 77,96 82,88" fill="#fff"/>
@@ -152,22 +157,77 @@ function generateMonsterSVG(m, isHurt = false) {
     <svg viewBox="0 0 130 140" class="char-svg">
         <ellipse cx="65" cy="132" rx="40" ry="8" fill="rgba(0,0,0,0.4)"/>
         ${hornsHtml}
-        <!-- Тело монстра -->
         <path d="M22 115 C18 45, 35 24, 65 24 C95 24, 112 45, 108 115 C95 125, 35 125, 22 115 Z" fill="${m.color}" stroke="rgba(255,255,255,0.25)" stroke-width="3"/>
-        <!-- Пузико -->
         <ellipse cx="65" cy="102" rx="26" ry="14" fill="${m.secondary}" opacity="0.5"/>
         ${eyesHtml}
         ${mouthHtml}
     </svg>`;
 }
 
-let state = JSON.parse(localStorage.getItem("mathRpgState_v3")) || {
-    playerName: "Хранительница",
+// =========================================================================
+// СИСТЕМА АККАУНТОВ ПО НОМЕРУ ТЕЛЕФОНА (Локальная + Облачная)
+// =========================================================================
+let usersDB = JSON.parse(localStorage.getItem("mathFighter_usersDB")) || {};
+let currentPhone = localStorage.getItem("mathFighter_activePhone") || null;
+
+let state = {
+    phone: "",
+    playerName: "Полина",
     lvl: 1,
     crystals: 0,
-    activeNumbers: [2, 3, 4, 5, 6, 7, 8, 9]
+    monsterIndex: 0,
+    controlWins: 0,
+    activeNumbers: [2, 3, 4, 5, 6, 7, 8, 9],
+    lastSeen: ""
 };
 
+// Приводим телефон к единому ключу (например 8 (999) 111-22-33 -> 79991112233)
+function normalizePhone(raw) {
+    let digits = raw.replace(/\D/g, "");
+    if (digits.length === 11 && digits.startsWith("8")) {
+        digits = "7" + digits.slice(1);
+    }
+    return digits;
+}
+
+async function syncFromCloud() {
+    if (!CLOUD_DB_URL) return;
+    try {
+        const res = await fetch(`${CLOUD_DB_URL.replace(/\/$/, "")}/users.json`);
+        if (res.ok) {
+            const cloudData = await res.json();
+            if (cloudData) {
+                usersDB = { ...usersDB, ...cloudData };
+                localStorage.setItem("mathFighter_usersDB", JSON.stringify(usersDB));
+            }
+        }
+    } catch (e) {
+        console.warn("Облако недоступно, работаем локально.");
+    }
+}
+
+async function saveState() {
+    if (!currentPhone) return;
+    state.lastSeen = new Date().toLocaleString("ru-RU", {
+        day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"
+    });
+    state.monsterIndex = monsterIndex;
+
+    usersDB[currentPhone] = { ...state };
+    localStorage.setItem("mathFighter_usersDB", JSON.stringify(usersDB));
+
+    if (CLOUD_DB_URL) {
+        try {
+            await fetch(`${CLOUD_DB_URL.replace(/\/$/, "")}/users/${currentPhone}.json`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(state)
+            });
+        } catch (e) {}
+    }
+}
+
+// Игровые переменные
 let heroHp = 100;
 let monsterIndex = 0;
 let monsterHp = MONSTERS[0].maxHp;
@@ -176,29 +236,123 @@ let currentQ = null;
 let questionStartTime = 0;
 let retryQueue = [];
 let isLocked = false;
-
 let isControlMode = false;
 let controlDeck = [];
 
-function init() {
-    renderNumberToggles();
-    loadMonster(0);
-    updateTopBar();
-    nextQuestion();
+async function init() {
+    setupAuthEvents();
+    await syncFromCloud();
+
+    // Если игрок уже входил на этом устройстве — сразу пускаем в игру
+    if (currentPhone && usersDB[currentPhone]) {
+        loginWithAccount(currentPhone);
+    } else {
+        showAuthModal();
+    }
 
     document.getElementById("edit-name-trigger").onclick = changePlayerName;
+    document.getElementById("logout-btn").onclick = logout;
+    document.getElementById("admin-btn").onclick = openAdminModal;
+    document.getElementById("close-admin-btn").onclick = () => {
+        document.getElementById("admin-modal").classList.add("hidden");
+    };
     document.getElementById("sound-toggle").onclick = () => {
         soundEnabled = !soundEnabled;
         document.getElementById("sound-toggle").textContent = soundEnabled ? "🔊" : "🔇";
     };
+
+    // Кнопка "Понятно! Следующий вопрос" после ошибки
+    document.getElementById("next-question-btn").onclick = () => {
+        if (isControlMode) {
+            startControlExam();
+        } else {
+            nextQuestion();
+        }
+    };
 }
 
-function saveState() {
-    localStorage.setItem("mathRpgState_v3", JSON.stringify(state));
+function setupAuthEvents() {
+    const phoneInput = document.getElementById("auth-phone");
+    const nameInput = document.getElementById("auth-name");
+    const statusBox = document.getElementById("auth-status");
+
+    // Проверяем на лету, знаком ли нам этот номер телефона
+    phoneInput.addEventListener("input", () => {
+        const clean = normalizePhone(phoneInput.value);
+        if (clean.length >= 10 && usersDB[clean]) {
+            const existing = usersDB[clean];
+            statusBox.textContent = `✅ Аккаунт найден! Привет, ${existing.playerName} (Ур. ${existing.lvl})`;
+            nameInput.placeholder = existing.playerName;
+        } else if (clean.length >= 10) {
+            statusBox.textContent = `✨ Будет создан новый аккаунт на этот номер`;
+        } else {
+            statusBox.textContent = "";
+        }
+    });
+
+    document.getElementById("auth-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const cleanPhone = normalizePhone(phoneInput.value);
+        if (cleanPhone.length < 10) {
+            statusBox.textContent = "⚠️ Введи корректный номер телефона (минимум 10 цифр)";
+            return;
+        }
+
+        await syncFromCloud();
+        const enteredName = nameInput.value.trim();
+
+        if (usersDB[cleanPhone]) {
+            // Вход в существующий аккаунт по номеру телефона
+            if (enteredName.length > 0) {
+                usersDB[cleanPhone].playerName = enteredName.slice(0, 18);
+            }
+        } else {
+            // Регистрация нового аккаунта под этот номер телефона
+            usersDB[cleanPhone] = {
+                phone: cleanPhone,
+                playerName: enteredName.length > 0 ? enteredName.slice(0, 18) : "Полина",
+                lvl: 1,
+                crystals: 0,
+                monsterIndex: 0,
+                controlWins: 0,
+                activeNumbers: [2, 3, 4, 5, 6, 7, 8, 9],
+                lastSeen: new Date().toLocaleString("ru-RU")
+            };
+        }
+
+        loginWithAccount(cleanPhone);
+    });
 }
 
+function loginWithAccount(phoneKey) {
+    currentPhone = phoneKey;
+    localStorage.setItem("mathFighter_activePhone", phoneKey);
+    state = { ...usersDB[phoneKey] };
+
+    document.getElementById("auth-modal").classList.add("hidden");
+    renderNumberToggles();
+    loadMonster(state.monsterIndex || 0);
+    updateTopBar();
+    saveState();
+    nextQuestion();
+}
+
+function showAuthModal() {
+    document.getElementById("auth-modal").classList.remove("hidden");
+    document.getElementById("auth-phone").value = currentPhone || "";
+    document.getElementById("auth-name").value = "";
+    document.getElementById("auth-status").textContent = "";
+}
+
+function logout() {
+    localStorage.removeItem("mathFighter_activePhone");
+    currentPhone = null;
+    showAuthModal();
+}
+
+// Смена имени без потери привязки к номеру телефона
 function changePlayerName() {
-    const newName = prompt("Введи своё боевое имя:", state.playerName);
+    const newName = prompt("Введи новое имя (аккаунт останется привязан к твоему номеру):", state.playerName);
     if (newName && newName.trim().length > 0) {
         state.playerName = newName.trim().slice(0, 18);
         saveState();
@@ -206,6 +360,47 @@ function changePlayerName() {
     }
 }
 
+// Панель администратора для просмотра всех телефонов и прогресса
+async function openAdminModal() {
+    const pin = prompt("Введи пин-код администратора:");
+    if (pin !== ADMIN_PIN) {
+        if (pin !== null) alert("Неверный пин-код!");
+        return;
+    }
+
+    await syncFromCloud();
+    const tbody = document.getElementById("admin-users-tbody");
+    tbody.innerHTML = "";
+
+    const cloudLabel = document.getElementById("cloud-status-label");
+    cloudLabel.textContent = CLOUD_DB_URL
+        ? "🌐 Облачная синхронизация активна (видны входы со всех устройств)"
+        : "💾 Локальный режим (чтобы видеть входы с других телефонов, укажи CLOUD_DB_URL в script.js)";
+
+    const keys = Object.keys(usersDB);
+    if (keys.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5">Пока никто не зарегистрировался</td></tr>`;
+    } else {
+        keys.forEach(phone => {
+            const u = usersDB[phone];
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td><b>+${u.phone || phone}</b></td>
+                <td>${u.playerName}</td>
+                <td>Ур. ${u.lvl} (${u.crystals} 💎)</td>
+                <td>${u.controlWins || 0}</td>
+                <td>${u.lastSeen || "-"}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    document.getElementById("admin-modal").classList.remove("hidden");
+}
+
+// =========================================================================
+// ИГРОВАЯ ЛОГИКА И БОЕВКА
+// =========================================================================
 function renderNumberToggles() {
     const container = document.getElementById("num-toggles");
     container.innerHTML = "";
@@ -372,19 +567,16 @@ function nextQuestion() {
     });
 }
 
-// Запускает полноценную сцену разбега и отвешивания ЛЕЩА
 function performSlapAttack(isCrit, popupText) {
     const heroWrap = document.getElementById("hero-wrap");
     const monsterSprite = document.getElementById("monster-sprite");
     const slapHand = document.getElementById("slap-hand");
     const slapSparks = document.getElementById("slap-sparks");
 
-    // 1. Героиня разбегается к монстру
     heroWrap.classList.remove("hero-attack-run");
     void heroWrap.offsetWidth;
     heroWrap.classList.add("hero-attack-run");
 
-    // 2. В момент подлета (через 160 мс) прилетает ладонь, звук леща и корчится лицо босса
     setTimeout(() => {
         playSound(isCrit ? "crit" : "slap");
 
@@ -395,7 +587,6 @@ function performSlapAttack(isCrit, popupText) {
         slapHand.classList.add("active");
         slapSparks.classList.add("active");
 
-        // Меняем лицо монстра на побитое (X_X) и сплющиваем его
         renderMonsterSprite(true);
         monsterSprite.classList.remove("monster-slapped");
         void monsterSprite.offsetWidth;
@@ -404,7 +595,6 @@ function performSlapAttack(isCrit, popupText) {
         showDamagePopup(popupText);
     }, 160);
 
-    // 3. Возвращаем обычное лицо монстру, если он еще жив
     setTimeout(() => {
         if (monsterHp > 0) renderMonsterSprite(false);
     }, 680);
@@ -452,12 +642,13 @@ function checkAnswer(selected, btnElement) {
             setTimeout(nextQuestion, 850);
         }
     } else {
-        // ОШИБКА: Монстр контратакует!
+        // ОШИБКА: игра ждет, пока Полина сама не нажмет кнопку "Следующий вопрос"!
         btnElement.classList.add("wrong");
         combo = 0;
         playSound("wrong");
 
         document.querySelectorAll(".ans-btn").forEach(b => {
+            b.disabled = true;
             if (Number(b.textContent) === currentQ.correct) b.classList.add("correct");
         });
 
@@ -470,36 +661,41 @@ function checkAnswer(selected, btnElement) {
 
         if (isControlMode) {
             heroHp = Math.max(10, heroHp - 30);
-            setLog(`❌ Промах! ${currentQ.a} × ${currentQ.b} = ${currentQ.correct}. Пятёрка увернулась — начинаем Контроль заново!`);
-            updateTopBar();
-            updateHpBars();
-            setTimeout(startControlExam, 3500);
+            setLog(`❌ Ошибка! ${currentQ.a} × ${currentQ.b} = ${currentQ.correct}. Разбери подсказку и нажми кнопку ниже, чтобы начать Контроль заново!`);
+            document.getElementById("next-question-btn").textContent = "Понятно! Начать Контроль заново 🔄";
         } else {
             heroHp = Math.max(10, heroHp - 15);
-            setLog(`🛡️ Босс куснул в ответ! ${currentQ.a} × ${currentQ.b} = ${currentQ.correct}. Запомни и отомсти!`);
+            setLog(`🛡️ Босс куснул в ответ! Посмотри на подсказку и нажми кнопку, когда будешь готова дальше:`);
+            document.getElementById("next-question-btn").textContent = "Понятно! Следующий вопрос ➡️";
             retryQueue.push({ a: currentQ.a, b: currentQ.b });
-            updateTopBar();
-            updateHpBars();
-            setTimeout(nextQuestion, 3200);
         }
+
+        updateTopBar();
+        updateHpBars();
+        saveState();
+        // Обрати внимание: никакого setTimeout здесь больше нет! Ждем клика по кнопке.
     }
 }
 
 function showVisualHint(a, b, total) {
     const hintBox = document.getElementById("visual-hint");
-    hintBox.classList.remove("hidden");
-    hintBox.innerHTML = `<div>Подсказка: <b>${a}</b> рядов по <b>${b}</b> точек = <b>${total}</b></div>`;
+    const hintText = document.getElementById("hint-text");
+    const gridContainer = document.getElementById("hint-grid-container");
 
+    hintBox.classList.remove("hidden");
+    hintText.innerHTML = `Запомни: <b>${a} × ${b} = ${total}</b><br><span style="font-size:0.85rem; color:#c8d6e5;">(это ${a} рядов по ${b} точек)</span>`;
+
+    gridContainer.innerHTML = "";
     const grid = document.createElement("div");
     grid.className = "hint-grid";
-    grid.style.gridTemplateColumns = `repeat(${b}, 13px)`;
+    grid.style.gridTemplateColumns = `repeat(${b}, 14px)`;
 
     for (let i = 0; i < total; i++) {
         const dot = document.createElement("div");
         dot.className = "hint-dot";
         grid.appendChild(dot);
     }
-    hintBox.appendChild(grid);
+    gridContainer.appendChild(grid);
 }
 
 function handleMonsterDefeat() {
@@ -507,6 +703,13 @@ function handleMonsterDefeat() {
     const bonusCrystals = isControlMode ? 25 : 10;
     state.crystals += bonusCrystals;
     heroHp = 100;
+
+    if (isControlMode) {
+        state.controlWins = (state.controlWins || 0) + 1;
+    } else {
+        monsterIndex = (monsterIndex + 1) % MONSTERS.length;
+    }
+
     saveState();
     updateTopBar();
 
@@ -530,7 +733,7 @@ function handleMonsterDefeat() {
     } else {
         setLog(`🎉 Босс улетел в нокаут! +${bonusCrystals} 💎 и следующий соперник!`);
         setTimeout(() => {
-            loadMonster(monsterIndex + 1);
+            loadMonster(monsterIndex);
             nextQuestion();
         }, 1500);
     }

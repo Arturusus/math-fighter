@@ -17,6 +17,147 @@ body {
     padding: 10px;
 }
 
+.hidden {
+    display: none !important;
+}
+
+/* МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ И АДМИНКИ */
+.auth-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 5, 20, 0.88);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    z-index: 200;
+}
+
+.auth-card {
+    background: #1d1135;
+    border: 2px solid #5f27cd;
+    border-radius: 24px;
+    padding: 26px 22px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+.admin-card {
+    max-width: 680px;
+    text-align: left;
+}
+
+.auth-icon {
+    font-size: 3.2rem;
+    margin-bottom: 6px;
+}
+
+.auth-card h2 {
+    color: #feca57;
+    margin-bottom: 8px;
+}
+
+.auth-desc {
+    font-size: 0.9rem;
+    color: #c8d6e5;
+    margin-bottom: 18px;
+    line-height: 1.4;
+}
+
+.input-label {
+    display: block;
+    text-align: left;
+    font-size: 0.85rem;
+    color: #a4b0be;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.auth-input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    font-size: 1.05rem;
+    margin-bottom: 14px;
+    outline: none;
+    user-select: text;
+}
+
+.auth-input:focus {
+    border-color: #1dd1a1;
+}
+
+.auth-status {
+    font-size: 0.88rem;
+    color: #1dd1a1;
+    min-height: 20px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.auth-submit-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #1dd1a1, #10ac84);
+    color: #130b24;
+    border: none;
+    padding: 14px;
+    border-radius: 14px;
+    font-size: 1.1rem;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(29, 209, 161, 0.4);
+}
+
+/* Таблица админа */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.admin-sub {
+    font-size: 0.85rem;
+    color: #feca57;
+    margin-bottom: 12px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+
+.admin-table-wrap {
+    overflow-x: auto;
+    max-height: 60vh;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.admin-table th, .admin-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    text-align: left;
+}
+
+.admin-table th {
+    color: #48dbfb;
+}
+
+/* ОСНОВНАЯ ИГРА */
 .game-wrapper {
     width: 100%;
     max-width: 780px;
@@ -28,21 +169,21 @@ body {
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
 }
 
-/* Верхняя панель */
 .top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     margin-bottom: 12px;
+    flex-wrap: wrap;
 }
 
 .stat-badge {
     background: rgba(0, 0, 0, 0.45);
-    padding: 8px 14px;
+    padding: 8px 12px;
     border-radius: 12px;
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
@@ -50,14 +191,24 @@ body {
     color: #ff9f43;
 }
 
-.sound-btn {
+.top-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.icon-btn {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: #fff;
-    border-radius: 12px;
-    padding: 7px 12px;
-    font-size: 1.1rem;
+    border-radius: 10px;
+    padding: 7px 10px;
+    font-size: 1rem;
     cursor: pointer;
+}
+
+.logout-btn {
+    background: rgba(255, 71, 87, 0.25);
+    border-color: rgba(255, 71, 87, 0.5);
 }
 
 /* Панель выбора чисел */
@@ -131,7 +282,6 @@ body {
     background: linear-gradient(180deg, #3a250a 0%, #4f320d 65%, #261705 65%, #170d02 100%);
 }
 
-/* Полоски здоровья как в файтинге */
 .hud-bars {
     display: flex;
     justify-content: space-between;
@@ -211,19 +361,18 @@ body {
     box-shadow: 0 0 12px rgba(255, 71, 87, 0.6);
 }
 
-/* Пол сцены и персонажи */
 .stage-floor {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    height: 170px;
+    height: 165px;
     padding: 0 25px;
     position: relative;
 }
 
 .character-wrap {
     width: 135px;
-    height: 150px;
+    height: 145px;
     position: relative;
     display: flex;
     justify-content: center;
@@ -231,13 +380,12 @@ body {
 }
 
 .char-svg {
-    width: 130px;
-    height: 145px;
+    width: 128px;
+    height: 142px;
     overflow: visible;
     filter: drop-shadow(0 8px 10px rgba(0,0,0,0.5));
 }
 
-/* Плавное дыхание персонажей */
 .hero-sprite, .monster-sprite {
     animation: idleFloat 2.2s ease-in-out infinite;
     transform-origin: bottom center;
@@ -252,7 +400,6 @@ body {
     50% { transform: translateY(-5px) scaleY(1.03); }
 }
 
-/* АНИМАЦИЯ РЫВКА И УДАРА ГЕРОЯ */
 .hero-attack-run {
     animation: heroDash 0.55s ease-in-out !important;
     z-index: 20;
@@ -265,7 +412,6 @@ body {
     100% { transform: translateX(0) scale(1); }
 }
 
-/* АНИМАЦИЯ АТАКИ МОНСТРА (при ошибке) */
 .monster-attack-run {
     animation: monsterDash 0.55s ease-in-out !important;
     z-index: 20;
@@ -277,7 +423,6 @@ body {
     100% { transform: translateX(0) scale(1); }
 }
 
-/* АНИМАЦИЯ ПОЛУЧЕНИЯ ЛЕЩА МОНСТРОМ (сплющивание и отлет) */
 .monster-slapped {
     animation: slappedImpact 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97) !important;
 }
@@ -290,7 +435,6 @@ body {
     100% { transform: translateX(0) rotate(0) scale(1); }
 }
 
-/* Рука-ЛЕЩ, которая влетает в босса */
 .slap-hand {
     position: absolute;
     top: 25px;
@@ -332,13 +476,12 @@ body {
     100% { opacity: 0; transform: scale(1.8); }
 }
 
-/* Всплывающий текст ЛЕЩА */
 .damage-popup {
     position: absolute;
     top: -18px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 1.45rem;
+    font-size: 1.4rem;
     font-weight: 900;
     color: #feca57;
     background: #ff4757;
@@ -362,7 +505,7 @@ body {
     100% { opacity: 0; transform: translate(-50%, -48px) scale(0.95); }
 }
 
-/* Зона вопроса */
+/* Зона вопроса и подсказки */
 .spell-zone {
     text-align: center;
 }
@@ -376,7 +519,7 @@ body {
 }
 
 .question-box {
-    font-size: 2.6rem;
+    font-size: 2.5rem;
     font-weight: 900;
     background: rgba(255, 255, 255, 0.08);
     display: inline-block;
@@ -387,30 +530,48 @@ body {
 }
 
 .visual-hint {
-    background: rgba(0, 0, 0, 0.55);
-    border: 2px dashed #feca57;
-    border-radius: 14px;
-    padding: 10px;
-    margin: 0 auto 14px auto;
-    max-width: 420px;
-    font-size: 0.9rem;
+    background: rgba(15, 8, 30, 0.9);
+    border: 2px solid #feca57;
+    border-radius: 16px;
+    padding: 16px;
+    margin: 0 auto 16px auto;
+    max-width: 440px;
+    font-size: 0.95rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
 }
 
 .hint-grid {
     display: inline-grid;
-    gap: 4px;
-    margin-top: 8px;
+    gap: 5px;
+    margin: 12px 0;
 }
 
 .hint-dot {
-    width: 13px;
-    height: 13px;
+    width: 14px;
+    height: 14px;
     background: #feca57;
     border-radius: 3px;
 }
 
-.hidden {
-    display: none !important;
+/* Кнопка перехода к следующему вопросу после ошибки */
+.next-q-btn {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    background: linear-gradient(135deg, #feca57, #ff9f43);
+    color: #130b24;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(254, 202, 87, 0.4);
+    transition: transform 0.15s;
+}
+
+.next-q-btn:active {
+    transform: scale(0.97);
 }
 
 .answers-grid {
@@ -433,8 +594,8 @@ body {
     transition: transform 0.1s, background 0.15s;
 }
 
-.ans-btn:active {
-    transform: scale(0.95);
+.ans-btn:disabled {
+    cursor: default;
 }
 
 .ans-btn.correct {
@@ -445,7 +606,7 @@ body {
 
 .ans-btn.wrong {
     background: #ff4757 !important;
-    opacity: 0.7;
+    opacity: 0.75;
 }
 
 @media (max-width: 520px) {
